@@ -1,26 +1,33 @@
 const core = require('@actions/core')
-const { wait } = require('./wait')
+const { Storage } = require('@google-cloud/storage')
 
-/**
- * The main function for the action.
- * @returns {Promise<void>} Resolves when the action is complete.
- */
 async function run() {
   try {
-    const ms = core.getInput('milliseconds', { required: true })
+    const storage = new Storage()
+    const bucketName = core.getInput('bucket_name')
+    const fileName = core.getInput('target_file_name')
+    const downloadPath = core.getInput('local_download_path')
 
-    // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.debug(`Waiting ${ms} milliseconds ...`)
+    core.debug(`Checking if file ${fileName} exists in bucket ${bucketName}.`)
 
-    // Log the current timestamp, wait, then log the new timestamp
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    const bucket = storage.bucket(bucketName)
+    const file = bucket.file(fileName)
+    const [exists] = await file.exists()
 
-    // Set outputs for other workflow steps to use
-    core.setOutput('time', new Date().toTimeString())
+    if (exists) {
+      core.debug(
+        `File ${fileName} exists in bucket ${bucketName}. Downloading...`
+      )
+
+      await file.download({
+        destination: downloadPath
+      })
+
+      core.debug(`File ${fileName} downloaded successfully to ${downloadPath}.`)
+    } else {
+      core.setFailed(`File ${fileName} does not exist in bucket ${bucketName}.`)
+    }
   } catch (error) {
-    // Fail the workflow run if an error occurs
     core.setFailed(error.message)
   }
 }

@@ -1,18 +1,15 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
-
-# Define your inputs here.
+name: 'Download File from GCP Bucket'
+description: 'Downloads a file from a Google Cloud Storage bucket'
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  bucket_name:
+    description: 'GCP bucket name'
     required: true
-    default: '1000'
-
-# Define your outputs here.
-outputs:
-  time:
-    description: 'Your output description here'
+  target_file_name:
+    description: 'Name of the file to download'
+    required: true
+  local_download_path:
+    description: 'Path where the downloaded file will be saved'
+    required: true
 
 runs:
   using: node20
