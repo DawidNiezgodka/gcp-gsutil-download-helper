@@ -4,9 +4,12 @@ inputs:
   bucket_name:
     description: 'GCP bucket name'
     required: true
-  target_file_name:
-    description: 'Name of the file to download'
-    required: true
+  target_file:
+    description: 'Use this input if you want to download a specific file from the bucket'
+    required: false
+  target_folder:
+    description: 'Use this input if you want to download all files from a specific folder in the bucket'
+    required: false
   local_download_path:
     description: 'Path where the downloaded file will be saved'
     required: true
