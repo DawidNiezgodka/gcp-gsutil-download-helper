@@ -67,14 +67,13 @@ async function run() {
             await file.download({
               destination: `${tempPath}`
             })
+            core.debug(`Folder ${targetFolder} downloaded successfully to ${downloadPath}.`)
           } catch (e) {
-            core.debug(
-                `Error downloading the image at ${downloadPath}/${fileName}: `,
-                e
-            )
+            core.debug(`Error downloading the file at ${targetFolder}/${fileName}`)
+            core.debug(e)
           }
         }
-        core.debug(`Folder ${targetFolder} downloaded successfully to ${downloadPath}.`)
+
       } else {
         core.setFailed(`Folder ${targetFolder} does not exist in bucket ${bucketName}.`)
       }

@@ -45430,6 +45430,7 @@ module.exports = Queue;
 const core = __nccwpck_require__(5127)
 const { Storage } = __nccwpck_require__(2421)
 const path = __nccwpck_require__(1017);
+const fs = __nccwpck_require__(7147);
 
 async function run() {
   try {
@@ -45466,6 +45467,15 @@ async function run() {
     if (targetFolder) {
       core.debug(`Checking if folder ${targetFolder} exists in bucket ${bucketName}.`)
 
+      try {
+        if (!fs.existsSync(targetFolder)) {
+          console.log("Creating directory: " + targetFolder)
+          fs.mkdirSync(targetFolder);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
       const bucket = storage.bucket(bucketName)
       const [files] = await bucket.getFiles({
         prefix: targetFolder
@@ -45486,14 +45496,13 @@ async function run() {
             await file.download({
               destination: `${tempPath}`
             })
+            core.debug(`Folder ${targetFolder} downloaded successfully to ${downloadPath}.`)
           } catch (e) {
-            core.debug(
-                `Error downloading the image at ${downloadPath}/${fileName}: `,
-                e
-            )
+            core.debug(`Error downloading the file at ${targetFolder}/${fileName}`)
+            core.debug(e)
           }
         }
-        core.debug(`Folder ${targetFolder} downloaded successfully to ${downloadPath}.`)
+
       } else {
         core.setFailed(`Folder ${targetFolder} does not exist in bucket ${bucketName}.`)
       }
