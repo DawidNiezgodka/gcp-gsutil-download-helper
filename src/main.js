@@ -1,6 +1,7 @@
 const core = require('@actions/core')
 const { Storage } = require('@google-cloud/storage')
 const path = require("path");
+const fs = require("fs");
 
 async function run() {
   try {
@@ -36,6 +37,15 @@ async function run() {
     // if targetFolder is provided, then we download all files from bucket
     if (targetFolder) {
       core.debug(`Checking if folder ${targetFolder} exists in bucket ${bucketName}.`)
+
+      try {
+        if (!fs.existsSync(targetFolder)) {
+          console.log("Creating directory: " + targetFolder)
+          fs.mkdirSync(targetFolder);
+        }
+      } catch (err) {
+        console.error(err);
+      }
 
       const bucket = storage.bucket(bucketName)
       const [files] = await bucket.getFiles({
