@@ -45439,7 +45439,7 @@ async function run() {
     const targetFile = core.getInput('target_file')
     const targetFolder = core.getInput('target_folder')
     const downloadPath = core.getInput('local_download_path')
-``
+
     // if targetFile is provided, then we download a single file from bucket
     if (targetFile) {
       core.debug(`Checking if file ${targetFile} exists in bucket ${bucketName}.`)
