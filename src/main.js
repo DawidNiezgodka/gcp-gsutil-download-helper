@@ -10,7 +10,7 @@ async function run() {
     const targetFile = core.getInput('target_file')
     const targetFolder = core.getInput('target_folder')
     const downloadPath = core.getInput('local_download_path')
-
+``
     // if targetFile is provided, then we download a single file from bucket
     if (targetFile) {
       core.debug(`Checking if file ${targetFile} exists in bucket ${bucketName}.`)
@@ -36,12 +36,12 @@ async function run() {
 
     // if targetFolder is provided, then we download all files from bucket
     if (targetFolder) {
-      core.debug(`Checking if folder ${targetFolder} exists in bucket ${bucketName}.`)
 
+      core.debug(`Checking if download path ${downloadPath} exists.`)
       try {
-        if (!fs.existsSync(targetFolder)) {
-          console.log("Creating directory: " + targetFolder)
-          fs.mkdirSync(targetFolder);
+        if (!fs.existsSync(downloadPath)) {
+          core.info("Creating directory: " + downloadPath)
+          fs.mkdirSync(downloadPath);
         }
       } catch (err) {
         console.error(err);
@@ -52,6 +52,7 @@ async function run() {
         prefix: targetFolder
       })
 
+      core.debug(`Checking if folder ${targetFolder} exists in bucket ${bucketName}.`)
       if (files.length > 0) {
         core.debug(
             `Folder ${targetFolder} exists in bucket ${bucketName}. Downloading...`
